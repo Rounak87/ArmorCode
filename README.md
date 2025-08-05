@@ -200,10 +200,6 @@ ArmorCode AI/
 - **No Code Execution**: Analysis is static, no user code is executed
 - **Data Privacy**: Code analysis happens locally, no data sent to external services
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 👨‍💻 Authors
 
 - **Rounak87**  - [GitHub](https://github.com/Rounak87)
