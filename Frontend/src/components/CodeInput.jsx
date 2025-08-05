@@ -12,9 +12,7 @@ const CodeInput = ({ code, setCode, onSubmit, loading }) => {
             value={code}
             onChange={(e) => setCode(e.target.value)}
             rows={14}
-            placeholder="// Paste your JavaScript code here for security analysis
-function example(userInput) {
-  // Your code will be analyzed for security vulnerabilities
+            placeholder="function example(userInput) {
   return userInput;
 }"
             className="w-full bg-slate-900/50 border border-gray-600 rounded-xl px-4 py-3 text-gray-100 placeholder-gray-400 focus:ring-4 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300 font-mono text-sm backdrop-blur-sm resize-none"

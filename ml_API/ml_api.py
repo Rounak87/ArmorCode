@@ -8,10 +8,8 @@ import tempfile
 import re
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 
-# Load your pretrained model (.pkl path)
-# Get the directory where this script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(script_dir, 'rf_vuln_model.pkl')
 model = joblib.load(model_path)
@@ -21,28 +19,28 @@ def extract_features_from_code(code_text):
     features = []
     
     # Basic code metrics
-    features.append(len(code_text))  # Code length
-    features.append(code_text.count('\n'))  # Number of lines
-    features.append(len(code_text.split()))  # Number of words
-    features.append(code_text.count('{'))  # Number of opening braces
-    features.append(code_text.count('}'))  # Number of closing braces
-    features.append(code_text.count('('))  # Number of opening parentheses
-    features.append(code_text.count(')'))  # Number of closing parentheses
-    features.append(code_text.count(';'))  # Number of semicolons
-    features.append(code_text.count('='))  # Number of assignments
-    features.append(code_text.count('function'))  # Number of function declarations
-    features.append(code_text.count('var'))  # Number of var declarations
-    features.append(code_text.count('let'))  # Number of let declarations
-    features.append(code_text.count('const'))  # Number of const declarations
-    features.append(code_text.count('if'))  # Number of if statements
-    features.append(code_text.count('for'))  # Number of for loops
-    features.append(code_text.count('while'))  # Number of while loops
-    features.append(code_text.count('return'))  # Number of return statements
-    features.append(code_text.count('try'))  # Number of try blocks
-    features.append(code_text.count('catch'))  # Number of catch blocks
-    features.append(code_text.count('throw'))  # Number of throw statements
+    features.append(len(code_text))
+    features.append(code_text.count('\n'))
+    features.append(len(code_text.split()))
+    features.append(code_text.count('{'))
+    features.append(code_text.count('}'))
+    features.append(code_text.count('('))
+    features.append(code_text.count(')'))
+    features.append(code_text.count(';'))
+    features.append(code_text.count('='))
+    features.append(code_text.count('function'))
+    features.append(code_text.count('var'))
+    features.append(code_text.count('let'))
+    features.append(code_text.count('const'))
+    features.append(code_text.count('if'))
+    features.append(code_text.count('for'))
+    features.append(code_text.count('while'))
+    features.append(code_text.count('return'))
+    features.append(code_text.count('try'))
+    features.append(code_text.count('catch'))
+    features.append(code_text.count('throw'))
     
-    # Vulnerability indicators
+    # Vulnerability pattern detection
     dangerous_patterns = [
         r'\beval\s*\(',
         r'\bdocument\.write\s*\(',
@@ -53,12 +51,12 @@ def extract_features_from_code(code_text):
         r'\bFunction\s*\(',
         r'\.call\s*\(',
         r'\.apply\s*\(',
-        r'\$\{.*\}',  # Template literals
+        r'\$\{.*\}',
         r'javascript:',
-        r'on\w+\s*=',  # Event handlers
-        r'window\.',   # Window object access
-        r'document\.',  # Document object access
-        r'location\.',  # Location object access
+        r'on\w+\s*=',
+        r'window\.',
+        r'document\.',
+        r'location\.',
     ]
     
     for pattern in dangerous_patterns:
@@ -70,7 +68,6 @@ def extract_features_from_code(code_text):
 def calculate_enhanced_risk_score(features, ml_prediction, vulnerabilities):
     """Calculate enhanced risk score combining ML model, rule-based analysis, and heuristics"""
     
-    # Get base ML score
     base_ml_score = float(ml_prediction) * 100
     
     # Rule-based vulnerability scoring
@@ -87,44 +84,36 @@ def calculate_enhanced_risk_score(features, ml_prediction, vulnerabilities):
         else:
             vulnerability_score += 10
     
-    # Feature-based heuristic scoring
+    # Heuristic scoring based on pattern detection
     heuristic_score = 0
-    
-    # Check for dangerous pattern counts from features (last 15 features are vulnerability indicators)
-    danger_indicators = features[-15:]
+    danger_indicators = features[-15:]  # Last 15 features are vulnerability indicators
     total_danger_patterns = sum(danger_indicators)
     
     if total_danger_patterns > 0:
-        heuristic_score += min(total_danger_patterns * 20, 60)  # Cap at 60%
+        heuristic_score += min(total_danger_patterns * 20, 60)
     
-    # Code complexity indicators
+    # Code complexity scoring
     code_length = features[0]
     num_functions = features[9]
     
     if code_length > 500 and total_danger_patterns > 0:
-        heuristic_score += 10  # Complex code with vulnerabilities is riskier
+        heuristic_score += 10
     
-    # Combine scores with weights
-    # Give more weight to rule-based and heuristic analysis since ML model seems undertrained
+    # Combine scores with weights (30% ML, 50% Rules, 20% Heuristics)
     final_score = (
-        base_ml_score * 0.3 +          # 30% ML model
-        vulnerability_score * 0.5 +    # 50% Rule-based
-        heuristic_score * 0.2          # 20% Heuristics
+        base_ml_score * 0.3 +
+        vulnerability_score * 0.5 +
+        heuristic_score * 0.2
     )
     
-    # Ensure score is between 0-100
-    final_score = min(max(final_score, 0), 100)
-    
-    return round(final_score, 1)
+    return round(min(max(final_score, 0), 100), 1)
 
 def run_eslint_analysis(code_text):
     """Run ESLint analysis on JavaScript code"""
     vulnerabilities = []
     lines = code_text.split('\n')
     
-    # Define vulnerability patterns with their descriptions and severity
     vuln_patterns = {
-        # High severity patterns
         r'\beval\s*\(': {
             "message": "Use of eval() is extremely dangerous and can lead to code injection attacks",
             "severity": "error",

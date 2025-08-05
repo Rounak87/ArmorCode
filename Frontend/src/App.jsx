@@ -48,7 +48,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated Background */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 animate-pulse"></div>
       <div className="absolute top-0 left-1/4 w-72 h-72 bg-purple-500/30 rounded-full mix-blend-multiply filter blur-xl animate-bounce"></div>
       <div className="absolute top-0 right-1/4 w-72 h-72 bg-blue-500/30 rounded-full mix-blend-multiply filter blur-xl animate-bounce delay-75"></div>
@@ -56,9 +55,7 @@ export default function App() {
       <div className="relative z-10 container mx-auto px-6 py-8">
         <Header />
         
-        {/* Main Content Grid */}
         <div className="grid lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
-          {/* Left Panel - Code Input */}
           <div className="space-y-4">
             <CodeInput 
               code={code} 
@@ -67,33 +64,22 @@ export default function App() {
               loading={loading} 
             />
             
-            {/* Quick Examples */}
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-4">
               <h3 className="text-lg font-semibold text-white mb-3">📚 Quick Test Examples</h3>
               <div className="space-y-2">
                 <button
-                  onClick={() => setCode(`// Critical security vulnerabilities - Multiple attack vectors
-function executeUserCode(input) {
-  // Direct code execution - EXTREMELY DANGEROUS
+                  onClick={() => setCode(`function executeUserCode(input) {
   return eval(input);
 }
 
 function processUserData(data) {
-  // XSS vulnerability - script injection
   document.write('<script>' + data + '</script>');
-  
-  // Dynamic function creation - code injection
   const userFunc = new Function(data);
   userFunc();
-  
-  // Unsafe innerHTML with scripts
   document.body.innerHTML = '<div>' + data + '</div>';
-  
-  // Command execution vulnerability
   setTimeout(data, 100);
 }
 
-// SQL injection style concatenation
 const query = "SELECT * FROM users WHERE id = '" + userInput + "'";
 eval("window." + userProperty + " = " + userValue);`)}
                   className="w-full text-left p-2 bg-red-500/10 border border-red-500/20 rounded-lg hover:bg-red-500/20 transition-colors"
@@ -103,30 +89,23 @@ eval("window." + userProperty + " = " + userValue);`)}
                 </button>
                 
                 <button
-                  onClick={() => setCode(`// Medium risk security issues
-function updatePageContent(userContent) {
-  // XSS via innerHTML
+                  onClick={() => setCode(`function updatePageContent(userContent) {
   document.getElementById('content').innerHTML = userContent;
-  
-  // Unsafe timeout with string
   setTimeout("processData('" + userContent + "')", 1000);
   
-  // Direct DOM manipulation without sanitization
   const div = document.createElement('div');
   div.innerHTML = userContent;
   document.body.appendChild(div);
   
-  // Potential prototype pollution
   const config = {};
   config[userContent] = 'value';
   
-  // Unsafe regex that could cause ReDoS
   const pattern = new RegExp(userContent);
   return pattern.test(someString);
 }`)}
                   className="w-full text-left p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg hover:bg-yellow-500/20 transition-colors"
                 >
-                  <div className="text-yellow-300 font-medium text-sm">🟡 Low Risk Example</div>
+                  <div className="text-yellow-300 font-medium text-sm">🟡 Medium Risk Example</div>
                   <div className="text-gray-400 text-xs">innerHTML, setTimeout vulnerabilities</div>
                 </button>
                 
@@ -146,7 +125,6 @@ function updatePageContent(userContent) {
             </div>
           </div>
 
-          {/* Right Panel - Results */}
           <div className="space-y-4">
             {result ? (
               <ResultsPanel result={result} />
@@ -172,7 +150,6 @@ function updatePageContent(userContent) {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="relative z-10 container mx-auto px-6 py-8 text-center">
         <div className="border-t border-gray-700/50 pt-8">
           <p className="text-gray-400 text-sm">
