@@ -14,7 +14,6 @@
   <p><em>Modern, professional interface with real-time vulnerability analysis</em></p>
 </div>
 
-*To add your screenshot: Take a screenshot of your frontend running at `http://localhost:5176`, save it as `frontend-preview.png` in a `screenshots/` folder in your project root.*
 
 ## 🌟 Overview
 
